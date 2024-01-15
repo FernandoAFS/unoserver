@@ -1,0 +1,8 @@
+dist
+docker/Dockerfile
+htmlcov
+LICENSE
+Makefile
+MANIFEST.in
+tests
+ve
