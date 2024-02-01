@@ -177,6 +177,14 @@ class UnoClient:
                     # Return the result as a blob
                     return result.data
 
+    def ping(self):
+        with ServerProxy(f"http://{self.server}:{self.port}", allow_none=True) as proxy:
+            result = proxy.ping()
+            if result is not None:
+                return True
+            logger.warning("Process has exited, healthcheck failed")
+            return False
+
 
 def converter_main():
     logging.basicConfig()
@@ -338,3 +346,33 @@ def comparer_main():
 
     if args.outfile is None:
         sys.stdout.buffer.write(result)
+
+
+def ping_main():
+    logging.basicConfig()
+    logger.setLevel(logging.DEBUG)
+
+    parser = argparse.ArgumentParser("unoping")
+    parser.add_argument(
+        "--host", default="127.0.0.1", help="The host the server run on"
+    )
+    parser.add_argument("--port", default="2003", help="The port used by the server")
+    parser.add_argument(
+        "--host-location",
+        default="auto",
+        choices=["auto", "remote", "local"],
+        help="The host location determines the handling of files. If you run the client on the "
+        "same machine as the server, it can be set to local, and the files are sent as paths. "
+        "If they are different machines, it is remote and the files are sent as binary data. "
+        "Default is auto, and it will send the file as a path if the host is 127.0.0.1 or "
+        "localhost, and binary data for other hosts.",
+    )
+    args = parser.parse_args()
+
+    client = UnoClient(args.host, args.port, args.host_location)
+
+    ping = client.ping()
+    logger.info("ping is %s", ping)
+    if ping is True:
+        return 0
+    return ping

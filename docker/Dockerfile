@@ -1,5 +1,6 @@
 
 ARG PYTHON_VERSION=3.11
+ARG ALPINE_VERSION=3.19
 
 FROM python:${PYTHON_VERSION} as builder
 
@@ -12,7 +13,11 @@ COPY src /src
 RUN python -m build
 
 # TODO: MOVE TO ALPINE.
-FROM alpine
+FROM alpine:${ALPINE_VERSION}
+
+LABEL org.opencontainers.image.source=https://github.com/FernandoAFS/unoserver
+LABEL org.opencontainers.image.description="unoserver. Using LibreOffice as a server for converting documents."
+LABEL org.opencontainers.image.licenses=MIT
 
 # BUILD FROM THIS IMAGE
 

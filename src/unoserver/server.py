@@ -92,6 +92,13 @@ class UnoServer:
             server.register_introspection_functions()
 
             @server.register_function
+            def ping():
+                poll = self.libreoffice_process.poll()
+                if poll is None:
+                    return True
+                return poll
+
+            @server.register_function
             def convert(
                 inpath=None,
                 indata=None,
