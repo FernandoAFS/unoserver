@@ -39,8 +39,8 @@ docker-build:
 	docker build -t unoserver:latest -t unoserver:2.1.dev0 -f docker/Dockerfile .
 
 docker-export: docker-build
-	@mkdir dist
-	docker save -t unoserver:latest -t unoserver:2.1.dev0 > dist/unoserver.tar
+	@mkdir -p docker-export
+	docker save unoserver:latest unoserver:2.1.dev0 > docker-export/unoserver.tar
 
 clean:
 	rm -rf ve build htmlcov
